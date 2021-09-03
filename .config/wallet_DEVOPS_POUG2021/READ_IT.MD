@@ -1,0 +1,1 @@
+In this wallet_DEVOPS_POUG2021 folder you should unpack all the files from WALLET.Zip downloaded form your Oracle ATP

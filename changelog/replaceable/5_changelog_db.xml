@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+    <includeAll path="replaceable/type" />
+    <includeAll path="replaceable/trigger" />
+
+    <!--VIEWS -->  
+    <include file="replaceable/view/emp_details_view.sql"/>
+
+    <!--PACKAGES -->          
+    <changeSet id="EMPLOYEES_PKG" author="rgrzegorczyk" runOnChange="true">
+      <preConditions onFail="WARN">
+          <sqlCheck expectedResult="1">
+            SELECT 1 FROM DUAL;
+          </sqlCheck>
+        </preConditions>        
+          <sqlFile splitStatements="false" path="replaceable/package/EMPLOYEES_PKG.pks" encoding="UTF-8" />
+          <sqlFile splitStatements="false" path="replaceable/package/EMPLOYEES_PKG.pkb" encoding="UTF-8" />
+      <rollback>
+        drop package body EMPLOYEES_PKG;
+        drop package EMPLOYEES_PKG;
+      </rollback>
+    </changeSet>
+
+    <includeAll path="replaceable/procedure"/>
+    <includeAll path="replaceable/function"/>
+    <includeAll path="replaceable/synonym"/>
+
+    </databaseChangeLog>

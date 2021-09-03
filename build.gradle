@@ -1,0 +1,104 @@
+plugins {
+  id 'org.liquibase.gradle' version '2.0.4'
+  id 'java'
+}
+
+repositories {
+  mavenCentral()
+  maven {
+    url "https://mvnrepository.com/artifact"
+  }
+}
+
+dependencies {
+  liquibaseRuntime('org.liquibase:liquibase-gradle-plugin:2.0.4')
+  liquibaseRuntime('org.liquibase:liquibase-core:3.10.1')
+  liquibaseRuntime('org.liquibase:liquibase-groovy-dsl:2.0.3')
+  liquibaseRuntime('com.oracle.database.jdbc:ojdbc11:21.1.0.0')
+}
+
+def changeLogFilePath = 'changelog/master.xml';
+def applicationsChangelogPath = 'changelog/replaceable/6_applications.xml';
+def host;
+def port;
+def sn;
+def usr;
+def pww;
+def oci_db_name;
+
+task installApexApps() {
+  doLast {
+    def stdout = new ByteArrayOutputStream();
+
+    exec {
+      def cmd = "sql /nolog @.config/_exec/lbupdate.sql " + applicationsChangelogPath;
+      commandLine "sh", "-c", cmd
+
+      standardOutput = stdout;
+    }
+
+    def str = stdout.toString();
+    println "Output: $stdout";
+
+    if (!str.contains('Errors encountered:0'))
+    {
+      throw new GradleException("Error ocured during application import. Please check logs.")
+    }
+  }
+}
+
+task('standard_connection') {
+  doLast {
+
+    host = 'hostname';
+    port = '1521';
+    sn = 'service_name';
+    usr = 'DEVOPS_POUG2021';
+    pww = 'something_difficult';
+
+    liquibase {
+      activities {
+        main {
+          changeLogFile changeLogFilePath
+          url 'jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=' +
+               host + ')(PORT=' + port + '))(CONNECT_DATA=(SERVICE_NAME=' + sn + ')))'
+          username usr
+          password pww
+        }
+      }
+    }
+  }
+}
+
+task('cloud_connection') {
+  doLast {
+
+    oci_db_name = 'rgatp28_high';
+    usr = 'DEVOPS_POUG2021';
+    pww = '[YOUR_DB_USER_PASSWORD]';
+
+    liquibase {
+      activities {
+        main {
+          changeLogFile changeLogFilePath
+          url 'jdbc:oracle:thin:@' + oci_db_name + '?TNS_ADMIN=.config/wallet_DEVOPS_POUG2021'
+          username usr
+          password pww
+        }
+      }
+    }
+  }
+}
+
+task('run_uat_unit_tests') {
+  doLast {
+
+    oci_db_name = 'rgatp28_high';
+    usr = 'DEVOPS_POUG2021';
+    pww = '';
+
+    //here some testing scripts
+  }
+}
+
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+            <include file="install/table/countries.sql" />
+            <include file="install/table/departments.sql" />
+            <include file="install/table/employees.sql" />
+            <include file="install/table/job_history.sql" />
+            <include file="install/table/jobs.sql" />
+            <include file="install/table/locations.sql" />
+            <include file="install/table/regions.sql" />
+
+</databaseChangeLog>
